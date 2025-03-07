@@ -1,6 +1,6 @@
 // Function to redirect to camera.html (for live monitoring)
 function redirectToPage() {
-    window.location.href = "file:///C:/Users/mehaj/OneDrive/Desktop/nsdbhvhgb/camera.html";
+    window.location.href = "camera.html";
   }
   
   // Function to start YOLOv8 Obstacle Detection using webcam

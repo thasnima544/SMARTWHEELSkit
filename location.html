@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inzora Bot - Live Rescue Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: orange;
+            color: rgb(147, 2, 2);
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .video-container {
+            border: 4px solid #1e40af;
+            border-radius: 12px;
+            box-shadow: 0px 0px 20px rgba(30, 64, 175, 0.7);
+            overflow: hidden;
+            background: black;
+            padding: 10px;
+        }
+        img {
+            width: 100%;
+            max-width: 100%;
+            border-radius: 12px;
+        }
+        .buttons {
+            margin-top: 15px;
+        }
+        button {
+            margin: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #1e40af;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #b91c1c;
+            color: white;
+        }
+        .night-mode {
+            background-color: #222;
+            color: white;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 12px;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+</head>
+<body>
+    <div class="header">🚨 Inzora Bot - Disaster Rescue Live Feed 🚨</div>
+    <div class="grid-container" id="cameraGrid">
+        <!-- Camera feeds will be added here dynamically -->
+    </div>
+    <div id="map"></div>
+    <div class="buttons">
+        <button class="btn-primary" onclick="toggleNightMode()">🌙 Night Mode</button>
+    </div>
+    <script>
+        const cameraIPs = [
+            "http://192.168.10.151:8081/",
+            "http://192.168.10.152:8081/",
+            "http://192.168.10.153:8081/",
+            "http://192.168.10.154:8081/"
+        ];
+        
+        function loadCameras() {
+            const grid = document.getElementById("cameraGrid");
+            cameraIPs.forEach(ip => {
+                const div = document.createElement("div");
+                div.className = "video-container";
+                div.innerHTML = `<img src="${ip}" alt="Camera Stream" onerror="handleError(this)">`;
+                grid.appendChild(div);
+            });
+        }
+        
+        function toggleNightMode() {
+            document.body.classList.toggle("night-mode");
+        }
+        
+        function handleError(img) {
+            img.src = "";
+            img.parentElement.innerHTML = "<p style='color:white;'>⚠️ Error loading stream.</p>";
+        }
+        
+        function initMap() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 15,
+                        center: userLocation
+                    });
+                    new google.maps.Marker({
+                        position: userLocation,
+                        map: map,
+                        title: "Your Location"
+                    });
+                }, () => {
+                    document.getElementById("map").innerHTML = "<p>Unable to retrieve location.</p>";
+                });
+            } else {
+                document.getElementById("map").innerHTML = "<p>Geolocation is not supported by this browser.</p>";
+            }
+        }
+        
+        loadCameras();
+    </script>
+</body>
+</html>

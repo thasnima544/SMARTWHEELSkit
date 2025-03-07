@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Rescue Feed & Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: orange;
+            color: rgb(147, 2, 2);
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .video-container, .map-container {
+            border: 4px solid #1e40af;
+            border-radius: 12px;
+            box-shadow: 0px 0px 20px rgba(30, 64, 175, 0.7);
+            background: black;
+            overflow: hidden;
+        }
+        .video-container img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+        }
+        .map-container {
+            width: 100%;
+            max-width: 600px;
+            height: 450px;
+        }
+        .buttons {
+            margin-top: 15px;
+        }
+        button {
+            margin: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary {
+            background-color: #1e40af;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #3b82f6;
+        }
+        .btn-danger {
+            background-color: #b91c1c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #ef4444;
+        }
+        .night-mode {
+            background-color: #222;
+            color: white;
+        }
+    </style>
+</head> 
+<body>
+    <div class="header">🚨 Live Rescue Feed & Location 🚨</div>
+
+    <div class="container">
+        <!-- Multiple CCTV Feeds -->
+        <div class="video-container">
+            <img id="stream1" src="http://192.168.10.151:8081/" alt="Camera 1">
+        </div>
+        <div class="video-container">
+            <img id="stream2" src="http://192.168.10.152:8081/" alt="Camera 2">
+        </div>
+        <div class="video-container">
+            <img id="stream3" src="http://192.168.10.153:8081/" alt="Camera 3">
+        </div>
+    </div>
+
+    <!-- Google Maps Live Location -->
+    <div class="map-container" id="map"></div>
+
+    <div class="buttons">
+        <button class="btn-primary" onclick="toggleFullScreen()">🔳 Fullscreen</button>
+        <button class="btn-primary" onclick="refreshStream()">🔄 Refresh</button>
+        <button class="btn-danger" onclick="toggleNightMode()">🌙 Night Mode</button>
+    </div>
+
+    <script>
+        function toggleFullScreen() {
+            let container = document.body;
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function refreshStream() {
+            document.getElementById("stream1").src = "http://192.168.10.151:8081/?t=" + new Date().getTime();
+            document.getElementById("stream2").src = "http://192.168.10.152:8081/?t=" + new Date().getTime();
+            document.getElementById("stream3").src = "http://192.168.10.153:8081/?t=" + new Date().getTime();
+        }
+
+        function toggleNightMode() {
+            document.body.classList.toggle("night-mode");
+        }
+
+        function initMap() {
+            const location = { lat: 10.9254, lng: 78.1325 }; // M Kumarasamy College of Engineering
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: location,
+            });
+            new google.maps.Marker({
+                position: location,
+                map: map,
+                title: "M Kumarasamy College of Engineering",
+            });
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz-cutahosjnIE9f0UXzXr-uDoMsLebhI&callback=initMap"></script>
+</body>
+</html>
+
+
